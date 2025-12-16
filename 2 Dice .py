@@ -1,17 +1,16 @@
 import tkinter as tk
-import random
-from playsound import playsound
-import threading
+import random, time, threading
 
 root = tk.Tk()
 root.title("2-Dice Roll Animation")
 root.geometry("400x400")
+winnings = 0
 
 def load_images(prefix):
   return [tk.PhotoImage(file=f"{i}.png") for i in range(1, 7)]
 
 def animate():
-  global frames_done
+  global frames_done, winnings
 
   n1, n2 = random.randint(1, 6), random.randint(1, 6)
   lblDie1.config(image=imgDie1[n1-1])
@@ -23,10 +22,15 @@ def animate():
   else:
     final1 = random.randint(1, 6)
     final2 = random.randint(1, 6)
-
+    if final1 == final2:
+      winnings += 5
+    else:
+      winnings -= 1
+    
     lblDie1.config(image=imgDie1[final1 - 1])
     lblDie2.config(image=imgDie2[final2 - 1])
     lblResult.config(text=f"You rolled: {final1} and {final2}")
+    lblWinnings.config(text=f"Winnings: {winnings}")
     btnRoll.config(state="normal")
 
 def roll_dice():
@@ -45,5 +49,8 @@ btnRoll.place(x=140, y=210)
 
 lblResult = tk.Label(root, text="", font=("Arial", 18, "bold"))
 lblResult.place(x=85, y=290)
+
+lblWinnings = tk.Label(root, text="", font=("Arial", 18, "bold"))
+lblWinnings.place(x=125, y=320)
 
 root.mainloop()
